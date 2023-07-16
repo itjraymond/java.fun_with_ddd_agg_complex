@@ -7,7 +7,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
-public sealed interface RatePlanCharge permits RatePlanCharge.RatePlanChargeHardware, RatePlanCharge.RatePlanChargeMbProtection, RatePlanCharge.RatePlanChargeNonMbProtection  {
+import static ca.jent.dddjdbccomplex.aggregates.subscriptionoffer.RatePlanCharge.*;
+
+public sealed interface RatePlanCharge permits RatePlanChargeHardware, RatePlanChargeMbProtection, RatePlanChargeNonMbProtection  {
 
     ProductType getProductType();
 

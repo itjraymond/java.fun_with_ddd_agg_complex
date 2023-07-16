@@ -11,7 +11,9 @@ import lombok.Value;
 
 import java.time.ZonedDateTime;
 
-public sealed interface RatePlan permits RatePlan.RatePlanHardware, RatePlan.RatePlanHardwareWithMbProtection, RatePlan.RatePlanHardwareWithNonMbProtection {
+import static ca.jent.dddjdbccomplex.aggregates.subscriptionoffer.RatePlan.*;
+
+public sealed interface RatePlan permits RatePlanHardware, RatePlanHardwareWithMbProtection, RatePlanHardwareWithNonMbProtection {
 
     OfferType getOfferType();
 
