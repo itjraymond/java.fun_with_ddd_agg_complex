@@ -16,7 +16,7 @@ public class TestDddJdbcComplexApplication {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.from(DddJdbcComplexApplication::main).with(TestDddJdbcComplexApplication.class).run(args);
+		SpringApplication.from(Application::main).with(TestDddJdbcComplexApplication.class).run(args);
 	}
 
 }
