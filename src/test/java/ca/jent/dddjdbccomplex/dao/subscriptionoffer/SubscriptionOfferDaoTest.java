@@ -3,6 +3,7 @@ package ca.jent.dddjdbccomplex.dao.subscriptionoffer;
 import ca.jent.dddjdbccomplex.aggregates.subscriptionoffer.RatePlan;
 import ca.jent.dddjdbccomplex.aggregates.subscriptionoffer.RatePlanCharge;
 import ca.jent.dddjdbccomplex.aggregates.subscriptionoffer.SubscriptionOffer;
+import ca.jent.dddjdbccomplex.aggregates.subscriptionoffer.dao.SubscriptionOfferDao;
 import ca.jent.dddjdbccomplex.config.Config;
 import ca.jent.dddjdbccomplex.types.Price;
 import ca.jent.dddjdbccomplex.types.Sku;
@@ -15,7 +16,6 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJson;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -50,6 +50,7 @@ class SubscriptionOfferDaoTest {
         RatePlanCharge rpch = RatePlanChargeHardware.of(sku, "rate plan charge hardware", Price.of("1598.79"));
         RatePlanCharge rpcm = RatePlanChargeMbProtection.of(protectionSkuMb, "rate plan charge mb protection", Price.of("10.68"));
         RatePlanCharge rpcn = RatePlanChargeNonMbProtection.of(protectionSkuNonMb, "rate plan charge non member protection", Price.of("15.87"));
+        RatePlanCharge rpcn2 = RatePlanChargeNonMbProtection.of(protectionSkuNonMb, "rate plan charge non member protection", Price.of("235.63"));
 
         RatePlan rph = RatePlanHardware.of(
                 null,
@@ -93,6 +94,32 @@ class SubscriptionOfferDaoTest {
 
         assertNotNull(savedSubscriptionOffer.getId());
         assertNotNull(savedSubscriptionOffer.getRatePlanHardware().getId());
+
+        RatePlan rphn2 = RatePlanHardwareWithNonMbProtection.of(
+                savedSubscriptionOffer.getRatePlanHardwareWithNonMbProtection().getId(),
+                sku,
+                "rate plan hardware with non-member protection",
+                LocalDateTime.parse("2023-07-01T00:00:00", DateTimeFormatter.ISO_DATE_TIME).atZone(Config.zoneId),
+                LocalDateTime.parse("2023-07-09T00:00:00", DateTimeFormatter.ISO_DATE_TIME).atZone(Config.zoneId),
+                (RatePlanChargeHardware) rpch,
+                (RatePlanChargeNonMbProtection) rpcn2
+        );
+
+        SubscriptionOffer s2 = SubscriptionOffer.of(
+                savedSubscriptionOffer.getId(),
+                savedSubscriptionOffer.getSku(),
+                savedSubscriptionOffer.getDepartment(),
+                savedSubscriptionOffer.getRatePlanHardware(),
+                savedSubscriptionOffer.getRatePlanHardwareWithMbProtection(),
+                (RatePlanHardwareWithNonMbProtection) rphn2
+        );
+
+        // updated db not insert
+        SubscriptionOffer saved2 = subscriptionOfferDao.save(s2);
+
+        assertEquals(savedSubscriptionOffer.getId(), saved2.getId());
+        assertEquals(savedSubscriptionOffer.getRatePlanHardware().getId(), saved2.getRatePlanHardware().getId());
+        assertEquals(Price.of("235.63"), saved2.getRatePlanHardwareWithNonMbProtection().getRatePlanChargeNonMbProtection().getPrice());
 
         Optional<SubscriptionOffer> subscriptionOfferWithIds = subscriptionOfferDao.findById(savedSubscriptionOffer.getId());
 

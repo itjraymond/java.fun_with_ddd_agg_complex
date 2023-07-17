@@ -1,4 +1,4 @@
-package ca.jent.dddjdbccomplex.dao.subscriptionoffer;
+package ca.jent.dddjdbccomplex.aggregates.subscriptionoffer.dao;
 
 import ca.jent.dddjdbccomplex.aggregates.subscriptionoffer.RatePlan;
 import ca.jent.dddjdbccomplex.aggregates.subscriptionoffer.RatePlanCharge;
@@ -12,7 +12,6 @@ import ca.jent.dddjdbccomplex.types.Sku;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.stereotype.Component;
